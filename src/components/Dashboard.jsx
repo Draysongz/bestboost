@@ -80,13 +80,15 @@ const Dashboard = () => {
       </Flex>
     );
   }
+
+  const mainAMount = amount/1000
   function payWithPaystack(e) {
     e.preventDefault();
     
     const paystack = new PaystackPop()
     paystack.newTransaction({
-      key:"pk_test_738c5038178fb13b68b9bb15cf43517877d65c17",
-      amount: amount *selectedService.rate * 100,
+      key:"pk_test_6f5223ed2ae2c4ceea9a6ef1b7def264c476051a",
+      amount: mainAMount *selectedService.rate * 100,
       email,
          onSuccess(transaction){
         let message= `Payment Successful! ${transaction.reference}`
