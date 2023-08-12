@@ -20,7 +20,7 @@ import {
 const Footer = () => {
   return (
     <Flex justifyContent={'center'} bgColor={'#000'} p={'6'} color={'white'}>
-        <Text>© Copyright Bestboost. All Rights Reserved.</Text>
+        <Text>Copyright Bestboost. All Rights Reserved.</Text>
     </Flex>
   )
 }

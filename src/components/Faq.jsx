@@ -14,7 +14,7 @@ import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 
 const Faq = () => {
   return (
-    <Flex bgColor={'white'} h={['70vh', '100vh', '60vh', '90vh']} direction={['column']} alignItems={'center'}>
+    <Flex bgColor={'white'} h={['70vh', '100vh', '60vh', '100vh']} direction={['column']} alignItems={'center'}>
         <Heading mt={'5rem'}
                     color={'#0C315C'}
                     fontSize={['19px', '32px', '42px']}
@@ -175,6 +175,7 @@ const Faq = () => {
                 </AccordionItem>
             </Accordion>
 
+    
     </Flex>
   )
 }
