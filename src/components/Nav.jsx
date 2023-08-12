@@ -240,7 +240,7 @@ import {
     },
     {
       label: "Sign Up",
-      href: "#",
+      href: "/register",
     },
   ];
   
