@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { ChakraProvider, extendTheme} from '@chakra-ui/react';
+import { ChakraProvider, theme} from '@chakra-ui/react';
 
-import {theme }from './chakra/theme';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-     <ChakraProvider>
+     <ChakraProvider theme={theme}>
      
     <App />
     </ChakraProvider>

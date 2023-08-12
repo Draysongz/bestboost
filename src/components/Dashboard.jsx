@@ -1,86 +1,175 @@
-import React,{useState, useEffect} from 'react'
-import { jsonData } from './jsonData'
-import { Flex, Heading, Text, Box, Card, CardBody,Spinner } from '@chakra-ui/react'
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { getFirestore, getDoc, doc } from "firebase/firestore";
-import { toast } from "react-toastify";
-import { app } from "./firebase/Firebase";
-
+import React, { useState, useEffect } from 'react';
+import { jsonData } from './jsonData';
+import {
+  Flex,
+  Spinner,
+  Button,
+  Table,
+  Th,
+  Thead,
+  Tbody,
+  Td,
+  Tr,
+  TableContainer,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  FormControl,
+  Input,
+  ModalOverlay,
+  ModalHeader,
+  ModalContent,
+  ModalCloseButton,
+  FormLabel,
+  ModalFooter,
+} from '@chakra-ui/react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { getFirestore, getDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+import { app } from './firebase/Firebase';
+import WithSubnavigation from './Nav';
+import PaystackPop from '@paystack/inline-js'
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-    const [userdata, setUserdata] = useState(null); // Change initial state to null
-    useEffect(() => {
-      const auth = getAuth();
-  
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          console.log(user.uid);
-          const db = getFirestore(app);
-          const docRef = doc(db, 'users', user.uid);
-          getDoc(docRef)
-            .then((docSnap) => {
-              if (docSnap.exists()) {
-                const userData = docSnap.data();
-                console.log('User data:', userData);
-                setUserdata(userData);
-              } else {
-                console.log('User document not found.');
-              }
-            })
-            .catch((error) => {
-              console.error('Error fetching user data:', error.message);
-            });
-        } else {
-          setUserdata(null); // Set userdata to null when the user is not logged in
-          toast.error('please login');
-          navigate('/login');
-        }
-      });
-  
-      return () => unsubscribe();
-    }, [navigate]);
-  
-    // Show the spinner while waiting for the authentication check
-    if (userdata === null) {
-      return (
-        <Flex align="center" justify="center" height="100vh">
-          <Spinner size="xl" color="blue.500" thickness='4px'
-    speed='0.65s'
-    emptyColor='gray.200' />
-        </Flex>
-      );
-    }
-  return (
-    <Flex direction={'column'} >
-        <Flex >
-        <Card p={2} bgColor={'purple.500'} color={'white'} w={'100vw'}>
-            <CardBody>
-            <Heading>Hi {userdata.firstName},welcome</Heading>    
-            </CardBody>
-        </Card>
-        </Flex>
-        {jsonData.map((service, index)=>{
-            return(
-                <Flex key={index} direction={'column'} gap={4}>
-                    <Card>
-                        <CardBody>
-                    <Heading> Service: {service.service}</Heading>
-                    <Text>Category: {service.category}</Text>
-                    <Text>Type: {service.type}</Text>
-                    <Text> Name: {service.name}</Text>
-                    <Text> Rate(NGN):{service.rate}</Text>
-                    <Text>Refill: {service.refill}</Text>
-                    <Text>Min-order:{service.min}</Text>
-                    <Text>Max-order: {service.max}</Text>
-                    </CardBody>
-                    </Card>
-                </Flex>
-            )
-        })}
-    </Flex>
-  )
-}
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [amount, setAmount]= useState(null)
+  const navigate = useNavigate();
+  const [userdata, setUserdata] = useState(null);
+  const [email,setEmail] = useState('')
 
-export default Dashboard
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user.uid);
+        const db = getFirestore(app);
+        const docRef = doc(db, 'users', user.uid);
+        getDoc(docRef)
+          .then((docSnap) => {
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
+              console.log('User data:', userData);
+              setUserdata(userData);
+              setEmail(user.email); 
+            } else {
+              console.log('User document not found.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching user data:', error.message);
+          });
+      } else {
+        setUserdata(null);
+        toast.error('please login');
+        navigate('/login');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  if (userdata === null) {
+    return (
+      <Flex align="center" justify="center" height="100vh">
+        <Spinner size="xl" color="blue.500" thickness="4px" speed="0.65s" emptyColor="gray.200" />
+      </Flex>
+    );
+  }
+  function payWithPaystack(e) {
+    e.preventDefault();
+    
+    const paystack = new PaystackPop()
+    paystack.newTransaction({
+      key:"pk_test_738c5038178fb13b68b9bb15cf43517877d65c17",
+      amount: amount *selectedService.rate * 100,
+      email,
+         onSuccess(transaction){
+        let message= `Payment Successful! ${transaction.reference}`
+        alert(message)
+        toast.success('message')
+        toast(amount)
+        setEmail('')
+        setAmount('')
+      },
+      onCancel(){
+        alert('Transaction canceled')
+      }
+
+    })
+
+  }
+  // Modal state for selected service
+ 
+
+  return (
+    <Flex direction={'column'}>
+      <WithSubnavigation />
+      <TableContainer>
+        <Table variant="striped" colorScheme="teal">
+          <Thead>
+            <Tr>
+              <Th>ID</Th>
+              <Th>Services</Th>
+              <Th>Rate per 1000</Th>
+              <Th>Min order</Th>
+              <Th>Max order</Th>
+              <Th>Process</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {jsonData.map((service, index) => (
+              <Tr key={service.service}>
+                <Td>{service.service}</Td>
+                <Td>{service.name}</Td>
+                <Td isNumeric>{service.rate}</Td>
+                <Td>{service.min}</Td>
+                <Td>{service.max}</Td>
+                <Td>
+                  <Button onClick={() => {
+                    setSelectedService(service);
+                    onOpen();
+                  }}>
+                    order
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+      <Modal initialFocusRef={initialRef} finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{selectedService ? selectedService.name : 'Service Details'}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            {selectedService && (
+              <>
+                <FormControl>
+                  <FormLabel>Service ID: {selectedService.service}</FormLabel>
+                  <FormLabel>Rate per 1000: {selectedService.rate}</FormLabel>
+                  <FormLabel>Amount</FormLabel>
+                  <Input required onChange={(e)=> setAmount(e.target.value)} value={amount} type='number' placeholder='enter how many followers in tunes of 1k'/>
+                  {/* Add more service details here */}
+                </FormControl>
+              </>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3}onClick={payWithPaystack}>
+              Order
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Flex>
+  );
+};
+
+export default Dashboard;
