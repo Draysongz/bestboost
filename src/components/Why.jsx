@@ -23,11 +23,11 @@ const Why = () => {
         <Text>Learn why using our panel is the best & cheapest way to get popular online.</Text>
         </Box>
        
-        <SimpleGrid p="10px" spacing={8} minChildWidth="150px" justifyItems='center' alignItems='center'  >
+        <SimpleGrid p="10px" spacing={8} minChildWidth="250px" justifyItems='center' alignItems='center'  >
                 <Card minH='30vh' maxH={['50vh', '50vh', '50vh']} minW={'15vw'}  >
                     <CardBody p='20px'>
                        <Flex direction={'column'} gap={5}>
-                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={'15vw'} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
+                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={['70vw', '70vw', '15vw']} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
                         <StarIcon  color={'purple.500'} boxSize={10}/>
                         </Box>
                         <Box>
@@ -43,7 +43,7 @@ const Why = () => {
                 <Card minH='30vh' maxH={['50vh', '50vh', '50vh']} minW={'15vw'}  >
                     <CardBody p='20px'>
                        <Flex direction={'column'} gap={5}>
-                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={'15vw'} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
+                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={['70vw', '70vw', '15vw']} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
                         <Icon as={FaReceipt}  color={'purple.500'} boxSize={10}/>
                         </Box>
                         <Box>
@@ -59,7 +59,7 @@ const Why = () => {
                 <Card minH='30vh' maxH={['50vh', '50vh', '50vh']} minW={'15vw'}  >
                     <CardBody p='20px'>
                        <Flex direction={'column'} gap={5}>
-                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={'15vw'} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
+                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={['70vw', '70vw', '15vw']} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
                         <Icon as={FaHandsHoldingCircle}  color={'purple.500'} boxSize={10}/>
                         </Box>
                         <Box>
@@ -75,7 +75,7 @@ const Why = () => {
                 <Card minH='30vh' maxH={['50vh', '50vh', '50vh']} minW={'15vw'}  >
                     <CardBody p='20px'>
                        <Flex direction={'column'} gap={5}>
-                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={'15vw'} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
+                        <Box textAlign={'center'}  rounded={'md'} bg={'blue.100'} w={['70vw', '70vw', '15vw']} minH={'10vh'} backdropBlur={'lg'} p={'15px'} >
                         <Icon as={GoRocket}  color={'purple.500'} boxSize={10}/>
                         </Box>
                         <Box>

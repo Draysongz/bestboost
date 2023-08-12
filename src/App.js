@@ -2,6 +2,9 @@ import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Why from "./components/Why";
 import How from "./components/How";
+import Faq from "./components/Faq";
+import Footer from "./components/Footer";
+
 
 function App() {
   return (
@@ -10,6 +13,8 @@ function App() {
       <Hero/>
       <Why/>
       <How/>
+      <Faq/>
+      <Footer/>
     </div>
   );
 }
