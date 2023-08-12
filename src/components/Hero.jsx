@@ -54,28 +54,6 @@ const Hero = () => {
       }
     };
 
-    const apiKey = '65722dfe4f9007abf82b0dff7a5bffdd';
-    const apiUrl = '/proxy/api/v2';
-    const action = 'services';
-  
-    const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
-  
-    const handleApiRequest = async () => {
-      try {
-        const response = await axios.post(apiUrl, {
-          key: apiKey,
-          action: action,
-        });
-        setResponse(response.data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
-
-    useEffect(()=>{
-        handleApiRequest()
-    }, [])
   return (
     <Flex p={['5', '10', '20','20']} direction={['column', 'column', 'row', 'row']} gap={'20'}>
         {/* left-side */}

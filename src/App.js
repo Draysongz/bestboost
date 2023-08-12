@@ -9,7 +9,9 @@ import Faq from "./components/Faq";
 import Footer from "./components/Footer";
 import Register from "./components/Register";
 import { ToastContainer } from "react-toastify";
+import Dashboard from "./components/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
+
 
 function Home() {
   return (
@@ -30,6 +32,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>
