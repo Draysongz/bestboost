@@ -101,7 +101,7 @@ const Maindash = ({userData}) => {
                     <Icon as={GoChecklist}  color={'purple.500'} boxSize={10}/>
                     </Box>
                     <Box>
-                        <Heading color={'#207dca'}>{`NGN ${userData.balance}`}/Heading>
+                        <Heading color={'#207dca'}>{`NGN ${userData.balance}`}</Heading>
                         <Text fontWeight={'medium'} mt='1rem'>Account balance</Text>
                     </Box>
                     </Flex>
