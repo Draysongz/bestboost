@@ -104,6 +104,7 @@ const MainFunds = ({userData}) => {
       const updateBalance = async () => {
         const usersCollection = collection(db, 'users');
         const userQuery = query(usersCollection, where('uid', '==', user.uid));
+        console.log('updating balance')
       
         try {
           const querySnapshot = await getDocs(userQuery);

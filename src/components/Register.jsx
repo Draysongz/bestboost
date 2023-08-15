@@ -116,7 +116,7 @@ const onSubmit = async (e) => {
         Email: email,
         Number: fullPhone,
         Gender: gender,
-
+        balance: 0.00,
       });
 
       toast.success('Registration successful');
