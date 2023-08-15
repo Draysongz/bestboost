@@ -35,13 +35,14 @@ const MainFunds = ({userData}) => {
 
     const db = getFirestore(app)
     const auth = getAuth()
+    const user= auth.currentUser
 
 
     const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
-        if (userData && userData.uid) {
-          const userUid = userData.uid;
+        if (userData && user.uid) {
+          const userUid = user.uid;
       
           const transactionsCollection = collection(db, 'transactions');
           const userQuery = query(transactionsCollection, where('userId', '==', userUid));
@@ -58,7 +59,7 @@ const MainFunds = ({userData}) => {
         }
         
         
-      }, [db, userData]);
+      }, [db, userData, user.uid]);
       
 
     const config = {
@@ -84,9 +85,12 @@ const MainFunds = ({userData}) => {
       const timestamp= Timestamp.now()
 
       const createTransaction = async (transactionId) => {
+        console.log('userId:', user.uid);
+        console.log('amount:', amount);
+      
         try {
           await addDoc(collection(db, 'transactions'), {
-            userId: userData.uid,
+            userId: user.uid,
             amount: parseFloat(amount),
             status: 'completed',
             transactionId: transactionId,
@@ -96,9 +100,10 @@ const MainFunds = ({userData}) => {
           console.error('Error creating transaction:', error);
         }
       };
+      
       const updateBalance = async () => {
         const usersCollection = collection(db, 'users');
-        const userQuery = query(usersCollection, where('uid', '==', userData.uid));
+        const userQuery = query(usersCollection, where('uid', '==', user.uid));
       
         try {
           const querySnapshot = await getDocs(userQuery);
