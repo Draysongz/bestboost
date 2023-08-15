@@ -103,25 +103,29 @@ const MainFunds = ({userData}) => {
       const updateBalance = async () => {
         const usersCollection = collection(db, 'users');
         const userQuery = query(usersCollection, where('uid', '==', user.uid));
-        console.log(userQuery)
-        console.log('updating balance for user:', user.uid);
-      
+        
+        console.log('Updating balance for user:', user.uid);
+        console.log('User query:', userQuery);
+        
         try {
           const querySnapshot = await getDocs(userQuery);
       
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0];
-            console.log('userDoc path:', userDoc.ref.path);
+            console.log('User document path:', userDoc.ref.path);
             const currentBalance = userDoc.data().balance;
             const newBalance = currentBalance + parseFloat(amount);
       
             await updateDoc(userDoc.ref, { balance: newBalance });
-            console.log('balance updated successfully');
+            console.log('Balance updated successfully');
+          } else {
+            console.log('Query snapshot is empty');
           }
         } catch (error) {
           console.error('Error updating user balance:', error);
         }
       };
+      
       
   return (
     <Flex bgColor={'#f2f7fc'} p={'5'} direction={'column'} w={'100vw'} gap={10} flex="1" overflowY="auto" overflowX={'hidden'}>
