@@ -100,26 +100,28 @@ const MainFunds = ({userData}) => {
           console.error('Error creating transaction:', error);
         }
       };
-      
       const updateBalance = async () => {
         const usersCollection = collection(db, 'users');
         const userQuery = query(usersCollection, where('uid', '==', user.uid));
-        console.log('updating balance')
+        console.log('updating balance for user:', user.uid);
       
         try {
           const querySnapshot = await getDocs(userQuery);
       
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0];
+            console.log('userDoc path:', userDoc.ref.path);
             const currentBalance = userDoc.data().balance;
             const newBalance = currentBalance + parseFloat(amount);
       
             await updateDoc(userDoc.ref, { balance: newBalance });
+            console.log('balance updated successfully');
           }
         } catch (error) {
           console.error('Error updating user balance:', error);
         }
       };
+      
   return (
     <Flex bgColor={'#f2f7fc'} p={'5'} direction={'column'} w={'100vw'} gap={10} flex="1" overflowY="auto" overflowX={'hidden'}>
         <Card minH={'10vh'} p='5px'>
