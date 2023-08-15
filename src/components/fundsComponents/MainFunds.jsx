@@ -111,20 +111,21 @@ const MainFunds = ({userData}) => {
           const querySnapshot = await getDocs(userQuery);
       
           if (!querySnapshot.empty) {
-            const userDoc = querySnapshot.docs[0];
-            console.log('User document path:', userDoc.ref.path);
-            const currentBalance = userDoc.data().balance;
-            const newBalance = currentBalance + parseFloat(amount);
-      
-            await updateDoc(userDoc.ref, { balance: newBalance });
-            console.log('Balance updated successfully');
+              const userDoc = querySnapshot.docs[0];
+                  console.log('User document path:', userDoc.ref.path);
+                  const currentBalance = userDoc.data().balance;
+                  const newBalance = currentBalance + parseFloat(amount);
+            
+                  await updateDoc(userDoc.ref, { balance: newBalance });
+                  console.log('Balance updated successfully');
           } else {
-            console.log('Query snapshot is empty');
+            console.log('No user document found for the given UID:', user.uid);
           }
         } catch (error) {
           console.error('Error updating user balance:', error);
         }
       };
+      
       
       
   return (
