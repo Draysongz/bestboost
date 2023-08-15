@@ -140,7 +140,7 @@ const MainFunds = ({userData}) => {
                   callback: (response) => {
                     console.log(response);
                     closePaymentModal(); // Close the payment modal programmatically
-                    if (response.status === 'successful') {
+                    if (response.status === 'Successful') {
                       createTransaction(response.transaction_id); // Save the transaction to Firestore
                       updateBalance(); // Update user balance in Firestore
                     }
