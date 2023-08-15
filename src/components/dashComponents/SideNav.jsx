@@ -88,7 +88,7 @@ const SideNav = () => {
             </Text>
           </Link>
 
-          <Link 
+          <Link to='/services'
           >
             <Text
                padding="10px"
@@ -107,7 +107,7 @@ const SideNav = () => {
               Services
             </Text>
           </Link>
-          <Link
+          <Link to='/orders'
           >
             <Text
                padding="10px"

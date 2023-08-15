@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import Dashboard from "./components/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import AddFunds from "./components/AddFunds";
+import Services from "./components/Services";
 
 
 function Home() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/addFunds' element={<AddFunds/>}/>
+        <Route path="/services" element={<Services/>}/>
       </Routes>
       <ToastContainer />
     </BrowserRouter>

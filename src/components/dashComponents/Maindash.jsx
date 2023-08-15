@@ -171,7 +171,7 @@ const Maindash = ({userData}) => {
                 </CardBody>
             </Card>
 
-            <Card h={'40vh'}>
+            <Card h={'60vh'}>
                 <CardBody>
                     <Text>Need to make your online presence noticeable?</Text>
                     <Text>We can help you with that! You can achieve great exposure <br/> online using our automated services we offer on our panel.<br/>
