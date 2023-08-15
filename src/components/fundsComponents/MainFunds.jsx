@@ -24,7 +24,7 @@ import {
     Thead
   } from "@chakra-ui/react";
   import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
-  import { getFirestore, updateDoc,collection, addDoc, Timestamp,query, where, getDocs, onSnapshot  } from 'firebase/firestore';
+  import { getFirestore, updateDoc,collection, addDoc, Timestamp,query, where, getDoc,doc, onSnapshot  } from 'firebase/firestore';
   import { getAuth } from 'firebase/auth';
   import { app } from '../firebase/Firebase';
 
