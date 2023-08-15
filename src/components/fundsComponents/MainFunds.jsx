@@ -101,31 +101,25 @@ const MainFunds = ({userData}) => {
         }
       };
       const updateBalance = async () => {
-        const usersCollection = collection(db, 'users');
-        const userQuery = query(usersCollection, where('uid', '==', user.uid));
-        
+        const userDocRef = doc(db, 'users', user.uid);
         console.log('Updating balance for user:', user.uid);
-        console.log('User query:', userQuery);
-        
-        try {
-          const querySnapshot = await getDocs(userQuery);
       
-          if (!querySnapshot.empty) {
-              const userDoc = querySnapshot.docs[0];
-                  console.log('User document path:', userDoc.ref.path);
-                  const currentBalance = userDoc.data().balance;
-                  const newBalance = currentBalance + parseFloat(amount);
-            
-                  await updateDoc(userDoc.ref, { balance: newBalance });
-                  console.log('Balance updated successfully');
+        try {
+          const userDocSnapshot = await getDoc(userDocRef);
+      
+          if (userDocSnapshot.exists()) {
+            const currentBalance = userDocSnapshot.data().balance;
+            const newBalance = currentBalance + parseFloat(amount);
+      
+            await updateDoc(userDocRef, { balance: newBalance });
+            console.log('Balance updated successfully');
           } else {
-            console.log('No user document found for the given UID:', user.uid);
+            console.log('No user document found');
           }
         } catch (error) {
           console.error('Error updating user balance:', error);
         }
       };
-      
       
       
   return (
