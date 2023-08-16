@@ -13,6 +13,8 @@ import Dashboard from "./components/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import AddFunds from "./components/AddFunds";
 import Services from "./components/Services";
+import Admin from "./components/admin/Admin";
+import Unauthorized from "./components/Unauthorized";
 
 
 function Home() {
@@ -37,6 +39,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/addFunds' element={<AddFunds/>}/>
         <Route path="/services" element={<Services/>}/>
+        <Route path="/admin" element={<Admin/>} />
+        <Route path="/unauthorized" element={<Unauthorized/>} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>

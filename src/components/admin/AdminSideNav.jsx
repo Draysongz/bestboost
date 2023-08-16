@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from "react";
+import React, {useState, useEffect}  from 'react'
 import { useNavigate } from "react-router-dom";
 import {
   useColorMode,
@@ -15,8 +14,7 @@ Spacer,
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link } from 'react-router-dom';
 
-
-const SideNav = () => {
+const AdminSideNav = () => {
     const navigate = useNavigate();
     const { colorMode, toggleColorMode } = useColorMode();
     const isDark = colorMode === "dark";
@@ -24,7 +22,7 @@ const SideNav = () => {
   
     const [display, changeDisplay] = useState("none");
   return (
-   <Flex
+    <Flex
     color={useColorModeValue("#000", "gray.200")}
     borderRight="1px"
     borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -68,7 +66,7 @@ const SideNav = () => {
    
 
         >
-          <Link to='/dashboard'
+          <Link to='/admin'
           >
             <Text
                padding="10px"
@@ -84,89 +82,11 @@ const SideNav = () => {
                 color: '#207dca',
               }}
             >
-              New order
+              admin Panel
             </Text>
           </Link>
 
-          <Link to='/services'
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               display={["none", "none", "flex", "flex", "flex"]}
-               width={'15vw'}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Services
-            </Text>
-          </Link>
-          <Link to='/orders'
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               display={["none", "none", "flex", "flex", "flex"]}
-               width={'15vw'}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Orders
-            </Text>
-          </Link>
-
-          <Link to='/addFunds'
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               display={["none", "none", "flex", "flex", "flex"]}
-               width={'15vw'}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Add funds
-            </Text>
-          </Link>
-
-          <Link
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               display={["none", "none", "flex", "flex", "flex"]}
-               width={'15vw'}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Mass order
-            </Text>
-          </Link>
-
+          
   
 
          
@@ -234,7 +154,7 @@ const SideNav = () => {
         p="2"
         mx="4"
       >
-       <Link to='/dashboard'
+       <Link to='/admin'
           >
             <Text border={'1px solid red'}
                padding="10px"
@@ -250,90 +170,15 @@ const SideNav = () => {
                 color: '#207dca',
               }}
             >
-              New order
+             admin Panel
             </Text>
           </Link>
 
-          <Link to='/services'
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               width={['45vw', '45vw', '15vw']}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Services
-            </Text>
-          </Link>
-          <Link to='/orders'
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               width={['45vw', '45vw', '15vw']}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Orders
-            </Text>
-          </Link>
-
-          <Link to='/addFunds'
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               width={['45vw', '45vw', '15vw']}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Add funds
-            </Text>
-          </Link>
-
-          <Link
-          >
-            <Text
-               padding="10px"
-               borderRadius="2xl"
-               width={['45vw', '45vw', '15vw']}
-              fontSize="lg"
-              fontWeight={'500'}
-              className="active"
-              color={'white'}
-              _hover={{
-                bg: "white",
-                color: '#207dca',
-              }}
-            >
-              Mass order
-            </Text>
-          </Link>
-
-
+          
       </Flex>
     </Flex>
   </Flex>
   )
 }
 
-export default SideNav
+export default AdminSideNav
