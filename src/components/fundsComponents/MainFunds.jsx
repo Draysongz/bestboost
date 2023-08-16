@@ -64,7 +64,7 @@ const MainFunds = ({userData}) => {
 
     const config = {
       
-        public_key: 'FLWPUBK_TEST-de2613036df88674779cc5554e166a94-X',
+        public_key: 'FLWPUBK-01b9c278a0abcce778d83175bd2df114-X',
         tx_ref: Date.now(),
         amount: amount,
         currency: 'NGN',
