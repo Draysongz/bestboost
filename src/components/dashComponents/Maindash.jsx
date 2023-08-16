@@ -19,11 +19,22 @@ import {MdReceipt} from 'react-icons/md'
 import {GoPeople} from 'react-icons/go'
 import {GoChecklist} from 'react-icons/go'
 import { jsonData } from "../jsonData";
+import { getDoc, doc, updateDoc, getFirestore, Timestamp, addDoc, collection } from "firebase/firestore";
+import { app } from "../firebase/Firebase";
+import { getAuth } from "firebase/auth";
+import {toast} from 'react-toastify'
 
 const Maindash = ({userData}) => {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedItem, setSelectedItem] = useState("");
     const [quantity, setQuantity] = useState("");
+    const [calculatedCharge, setCalculatedCharge] = useState('');
+    const [error, setError] = useState("");
+    const [processing, setProcessing] = useState(false);
+    const [link, setLink]= useState('')
+    const [updatedBalance, setUpdatedBalance] = useState(userData.balance);
+
+
     const uniqueCategories = Array.from(
       new Set(jsonData.map((item) => item.category))
     );
@@ -35,16 +46,94 @@ const Maindash = ({userData}) => {
     const selectedItemData = jsonData.find((item) => item.service === selectedItem);
   
     const calculateCharge = () => {
-        console.log("selectedItemData:", selectedItemData);
-        console.log("quantity:", quantity);
-      
-        if (selectedItemData && quantity) {
-          return (parseFloat(selectedItemData.rate) * parseInt(quantity)).toFixed(2);
+      console.log("selectedItemData:", selectedItemData);
+    
+      if (selectedItemData && quantity) {
+        const ratePer1000 = parseFloat(selectedItemData.rate);
+        const quantityInt = parseInt(quantity);
+    
+        console.log("ratePer1000:", ratePer1000);
+        console.log("quantityInt:", quantityInt);
+    
+        if (!isNaN(ratePer1000) && !isNaN(quantityInt)) {
+          const totalCharge = (ratePer1000 / 1000) * quantityInt;
+          console.log("totalCharge:", totalCharge);
+          return totalCharge.toFixed(2);
         }
-        return "";
-      };
-      
+      }
+      return "";
+    };
+    
+    const auth = getAuth();
+    const user = auth.currentUser
+    const db = getFirestore(app)
+    const timestamp= Timestamp.now()
+
+    const handleSubmit = async () => {
+      setError("");
+      setProcessing(true);
+    
+      // Fetch user's balance from the database
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnapshot = await getDoc(userDocRef);
+        const userBalance = userDocSnapshot.data().balance;
+    
+        // Compare user's balance with calculated charge
+        const chargeAmount = parseFloat(calculatedCharge);
+        if (userBalance >= chargeAmount) {
+          // Deduct charge from balance and update the balance in the database
+          const newBalance = userBalance - chargeAmount;
+          await updateDoc(userDocRef, { balance: newBalance });
+
+          const updatedUserDocSnapshot = await getDoc(userDocRef);
+          const updatedUserBalance = updatedUserDocSnapshot.data().balance;
+
+          setUpdatedBalance(updatedUserBalance); 
+    
+          // Create an order in the database
+          const orderData = {
+            userId: user.uid, // Include the user's UID in the order
+            service: selectedItemData.name,
+            quantity: parseInt(quantity),
+            amountPaid: chargeAmount,
+            link: link,
+            createdAt: timestamp,
+          };
+          
+          addDoc(collection(db, "orders"), orderData);
+          
+          // Clear form and show success message
+          setSelectedItem("");
+          setQuantity("");
+          setCalculatedCharge("");
+          setError("");
+          setProcessing(false);
+          toast.success('order created')
+        } else {
+          setError("Insufficient balance. Please fund your account.");
+          toast.error(error)
+          setProcessing(false);
+        }
+      } catch (error) {
+        setError("An error occurred. Please try again.");
+        setProcessing(false);
+      }
+    };
+    
+     const balance= updatedBalance.toFixed(1)
+
+    useEffect(() => {
+      console.log("quantity changed:", quantity);
+      console.log("selectedItem:", selectedItem);
+      console.log("filteredItems:", filteredItems);
+      console.log("selectedItemData:", selectedItemData);
+      const charge = calculateCharge();
+      console.log("charge:", charge);
+      setCalculatedCharge(charge);
+    }, [quantity, selectedItemData]);
   
+    
   return (
     <Flex p={'5'} direction={'column'} w={'100vw'} flex="1" overflowY="auto" overflowX={'hidden'}>
         <SimpleGrid p="10px" spacing={10} minChildWidth="200px" w={'80vw'}>
@@ -101,7 +190,7 @@ const Maindash = ({userData}) => {
                     <Icon as={GoChecklist}  color={'purple.500'} boxSize={10}/>
                     </Box>
                     <Box>
-                        <Heading color={'#207dca'}>{`NGN ${userData.balance}`}</Heading>
+                        <Heading color={'#207dca'}>{`NGN ${balance}`}</Heading>
                         <Text fontWeight={'medium'} mt='1rem'>Account balance</Text>
                     </Box>
                     </Flex>
@@ -117,54 +206,61 @@ const Maindash = ({userData}) => {
                 <FormControl>
   <FormLabel>Category</FormLabel>
   <Select variant={'filled'} value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-    <option value="">Select an option</option>
-    {uniqueCategories.map((category, index) => (
-      <option key={index} value={category}>
-        {category}
-      </option>
-    ))}
-  </Select>
+  <option value="">Select an option</option>
+  {uniqueCategories.map((category, index) => (
+    <option key={index} value={category}>
+      {category}
+    </option>
+  ))}
+</Select>
+
 
   <FormLabel>Service</FormLabel>
   <Box>
-    <Select variant="filled">
-      <option value="">Select an item</option>
-      {filteredItems.map((item, index) => (
-        <option key={index} value={item.service}>
-          {item.name} - NGN {item.rate}
-        </option>
-      ))}
-    </Select>
+  <Select variant="filled" value={selectedItem} onChange={(e) => setSelectedItem(e.target.value)}>
+  <option value="">Select an item</option>
+  {filteredItems.map((item, index) => (
+    <option key={index} value={item.service}>
+      {item.name} - NGN {item.rate} per 1000
+    </option>
+  ))}
+</Select>
   </Box>
 
   <FormLabel>Description</FormLabel>
   <Input variant={'filled'} type='text' value={'ADMIN NOTE | Low drop high quality accounts. No overdelivery'} disabled/>
 
   <FormLabel>Link</FormLabel>
-  <Input type="text"  variant='filled'/>
+  <Input type="text" value={link} onChange={(e)=>setLink(e.target.value)} variant='filled'/>
 
   
   <FormLabel>Quantity</FormLabel>
-              <Input
-                type="text"
-                variant='filled'
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-              />
+  <Input
+  type="text"
+  variant="filled"
+  value={quantity}
+  onChange={(e) => {
+    console.log("quantity changed:", e.target.value); // Add this line
+    setQuantity(e.target.value);
+  }}
+/>
+
               {selectedItemData && (
                 <Text>Min: {selectedItemData.min} - Max: {selectedItemData.max}</Text>
               )}
 
               <FormLabel>Charge</FormLabel>
               <Input
-                type='text'
-                variant='filled'
-                disabled
-                value={`NGN ${calculateCharge()}`}
-              />
+  type="text"
+  variant="filled"
+  disabled
+  value={`NGN ${calculatedCharge}`} // Use calculatedCharge here
+/>
 
 
-              <Button color={'white'} mt={'1rem'} w={['70vw', '70vw', '34vw']} bgColor={'purple.500'}>Submit</Button>
+
+              <Button  onClick={handleSubmit}
+  disabled={processing || !selectedItemData || !quantity || parseFloat(calculatedCharge) <= 0} color={'white'} mt={'1rem'} w={['70vw', '70vw', '34vw']} bgColor={'purple.500'}>Submit</Button>
             </FormControl>
 
 
