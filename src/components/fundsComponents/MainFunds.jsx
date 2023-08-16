@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import {
     Flex,
-    SimpleGrid,
     Card,
     CardBody,
-    Box,
     Text,
     Button,
-    Icon,
     FormControl,
     Input,
     FormLabel,
     Select,
-    Heading,
     TableContainer,
     Td,
     Tr,
     Th,
     Tbody,
-    Tfoot,
-    TableCaption,
     Table,
     Thead
   } from "@chakra-ui/react";

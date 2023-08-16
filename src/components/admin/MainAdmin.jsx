@@ -13,7 +13,7 @@ import {
   FormLabel,
   Select,
   Heading,
-  Table, Thead, Tbody, Tr, Th, Td
+  Table, Thead, Tbody, Tr, Th, Td, TableContainer
 } from "@chakra-ui/react";
 import {FiMenu} from 'react-icons/fi'
 import {MdReceipt} from 'react-icons/md'
@@ -147,15 +147,15 @@ const MainAdmin = ({userData}) => {
                 <Icon as={GoChecklist}  color={'purple.500'} boxSize={10}/>
                 </Box>
                 <Box>
-                    <Heading color={'#207dca'}>{`NGN ${totalAmountPaid.toFixed(2)}`}</Heading>
-                    <Text fontWeight={'medium'} mt='1rem'>Amount Paid for orders</Text>
+                    <Heading color={'#207dca'} fontSize={['18px', '16px', '24px']}>{`NGN ${totalAmountPaid.toFixed(2)}`}</Heading>
+                    <Text fontWeight={'medium'} fontSize={'16px'} mt='1rem'>Amount Paid for orders</Text>
                 </Box>
                 </Flex>
             </CardBody>
         </Card>
         
     </SimpleGrid>
-
+<TableContainer>
     <Table variant="striped" colorScheme="gray">
   <Thead>
     <Tr>
@@ -180,6 +180,7 @@ const MainAdmin = ({userData}) => {
     ))}
   </Tbody>
 </Table>
+</TableContainer>
 
     </Flex>
   )
