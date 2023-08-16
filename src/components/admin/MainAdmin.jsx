@@ -22,7 +22,7 @@ import {GoChecklist} from 'react-icons/go'
 import { app } from "../firebase/Firebase";
 import { getAuth } from "firebase/auth";
 import {toast} from 'react-toastify'
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, onSnapshot } from "firebase/firestore";
 import { Navigate, useNavigate } from "react-router-dom";
 
 
@@ -36,36 +36,61 @@ const MainAdmin = ({userData}) => {
 
     useEffect(() => {
         async function fetchData() {
-
-            const isAdmin = userData.roles && userData.roles.includes("admin");
-
-  if (!isAdmin) {
-    navigate('/unauthorized')
-  }
+          const isAdmin = userData.roles && userData.roles.includes("admin");
+      
+          if (!isAdmin) {
+            navigate("/unauthorized");
+            return; // Return early if not admin
+          }
+      
           const db = getFirestore(app);
-    
-          // Fetch data for total orders
+      
+          // Real-time listener for total orders
           const ordersCollectionRef = collection(db, "orders");
-          const ordersSnapshot = await getDocs(ordersCollectionRef);
-          const ordersData = ordersSnapshot.docs.map((doc) => doc.data());
-          setOrders(ordersData);
-          setTotalOrders(ordersSnapshot.size);
-    
+          const ordersUnsubscribe = onSnapshot(
+            ordersCollectionRef,
+            (snapshot) => {
+              console.log("Orders snapshot received:", snapshot.docs.length, "documents");
+              const ordersData = snapshot.docs.map((doc) => doc.data());
+              setOrders(ordersData);
+              setTotalOrders(snapshot.size);
+            },
+            (error) => {
+              console.error("Error in orders snapshot:", error);
+            }
+          );
+      
           // Fetch data for total users
           const usersCollectionRef = collection(db, "users");
           const usersSnapshot = await getDocs(usersCollectionRef);
           setTotalUsers(usersSnapshot.size);
-    
-          // Fetch data for total amount paid for orders
-          // You need to adapt this according to your Firestore structure
-          const amountPaidSnapshot = await getDocs(collection(db, "orders"));
-          const amountPaidData = amountPaidSnapshot.docs.map((doc) => doc.data().amountPaid);
-          const totalAmount = amountPaidData.reduce((acc, amount) => acc + amount, 0);
-          setTotalAmountPaid(totalAmount);
+      
+          // Real-time listener for total amount paid for orders
+          const amountPaidCollectionRef = collection(db, "orders");
+          const amountPaidUnsubscribe = onSnapshot(
+            amountPaidCollectionRef,
+            (snapshot) => {
+              console.log("Amount paid snapshot received:", snapshot.docs.length, "documents");
+              const amountPaidData = snapshot.docs.map((doc) => doc.data().amountPaid);
+              const totalAmount = amountPaidData.reduce((acc, amount) => acc + amount, 0);
+              setTotalAmountPaid(totalAmount);
+            },
+            (error) => {
+              console.error("Error in amount paid snapshot:", error);
+            }
+          );
+      
+          return () => {
+            // Unsubscribe from real-time listeners when component unmounts
+            ordersUnsubscribe();
+            amountPaidUnsubscribe();
+          };
         }
-    
+      
         fetchData();
-      }, []);
+      }, [navigate, userData]);
+      
+
   return (
     <Flex p={'5'} direction={'column'} w={'100vw'} flex="1" overflowY="auto" overflowX={'hidden'}>
     <SimpleGrid p="10px" spacing={10} minChildWidth="200px" w={'80vw'}>
@@ -122,7 +147,7 @@ const MainAdmin = ({userData}) => {
                 <Icon as={GoChecklist}  color={'purple.500'} boxSize={10}/>
                 </Box>
                 <Box>
-                    <Heading color={'#207dca'}>{`NGN ${totalAmountPaid}`}</Heading>
+                    <Heading color={'#207dca'}>{`NGN ${totalAmountPaid.toFixed(2)}`}</Heading>
                     <Text fontWeight={'medium'} mt='1rem'>Amount Paid for orders</Text>
                 </Box>
                 </Flex>
